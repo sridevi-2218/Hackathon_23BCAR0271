@@ -1,0 +1,47 @@
+import speech_recognition as sr
+import pyttsx3
+
+recognizer = sr.Recognizer()
+
+engine = pyttsx3.init()
+
+def speak(text):
+    engine.say(text)
+    engine.runAndWait()
+
+def listen():
+    with sr.Microphone() as source:
+        print("Listening for your command...")
+        recognizer.adjust_for_ambient_noise(source)
+        audio = recognizer.listen(source)
+
+    try:
+        print("Recognizing...")
+        command = recognizer.recognize_google(audio)
+        print("You said:", command)
+        return command.lower()
+    except sr.UnknownValueError:
+        print("Sorry, I could not understand the audio.")
+        return None
+    except sr.RequestError:
+        print("Sorry, there was an error with the speech service.")
+        return None
+
+if __name__ == "__main__":
+    while True:
+        command = listen()
+
+        if command:
+            if "hello" in command:
+                speak("Hello! How are you feeling today?")
+            elif "how are you" in command:
+                speak("I'm here for you! How are you feeling right now?")
+            elif "I'm feeling sad" in command or "I'm stressed" in command:
+                speak("I'm sorry to hear that. It's okay to feel this way. Try taking a few deep breaths or talking to someone you trust. You are not alone.")
+            elif "I'm feeling happy" in command:
+                speak("That's great to hear! Keep smiling and stay positive.")
+            elif "bye" in command:
+                speak("Goodbye! Take care of yourself. I'm always here if you need me.")
+                break
+            else:
+                speak("I didn't quite catch that. Could you say it again?")
